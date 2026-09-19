@@ -1,22 +1,55 @@
 # Verity — AI content intelligence
 
-A responsive prototype for an AI-content authenticity checker covering images, text, and video.
+A responsive AI-content checker with a lightweight Node.js backend that serves the website and returns demo analysis result payloads.
 
 ## Run locally
 
-Open `index.html` in a browser, or run `python3 -m http.server 8000` and visit `http://localhost:8000`.
+1. Install dependencies:
 
-## Included production-ready product direction
+```bash
+npm install
+```
 
-- **Multimodal detection API:** Put image, text, and video analyzers behind a secure backend. Return calibrated confidence intervals, model version, and an uncertainty label—not a binary verdict.
-- **Provenance verification:** Add C2PA / Content Credentials parsing and display the source and edit history when present.
-- **Evidence panel:** Explain metadata, compression patterns, face/hand artifacts, frame consistency, language signals, and source history in plain language.
-- **Privacy controls:** Encrypt uploads in transit and at rest, auto-delete raw media, publish retention rules, and offer user-controlled deletion.
-- **Human review workflow:** Add reviewer assignment, notes, side-by-side comparisons, audit logs, calibrated thresholds, and an appeal path.
-- **Batch and team tools:** Add folders, CSV/PDF exports, API keys, webhooks, rate limits, usage dashboards, and role-based access.
-- **Accessibility and localization:** Support keyboard navigation, screen readers, reduced motion, strong contrast, and translated explanations.
-- **Evaluation dashboard:** Track false positives and false negatives by media type and model version against a representative labeled set.
+2. Start the app:
 
-## Important product principle
+```bash
+npm start
+```
 
-AI detectors can be wrong and can be defeated by editing or compression. Results should communicate uncertainty and support human judgment, never silently replace it in moderation, education, employment, or publishing decisions.
+3. Open:
+
+```text
+http://localhost:3000
+```
+
+## Backend API
+
+- `GET /api/health` → checks service status
+- `POST /api/analyze` → analyzes an uploaded file or URL payload
+
+Example:
+
+```bash
+curl -X POST http://localhost:3000/api/analyze \
+  -F "type=image" \
+  -F "file=@example.png"
+```
+
+Or:
+
+```bash
+curl -X POST http://localhost:3000/api/analyze \
+  -H "Content-Type: application/json" \
+  -d '{"type":"text","url":"https://example.com/article"}'
+```
+
+## What the backend does
+
+- Serves the static website
+- Accepts image, text, and video requests
+- Produces a structured demo detection result
+- Returns confidence score, label, recommendation, and signal list
+
+## Production upgrade
+
+Replace the demo logic in `server.js` with calls to your real model or detection service, and store results with privacy-safe retention settings.
