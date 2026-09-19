@@ -1,31 +1,35 @@
 # Verity — AI content intelligence
 
-A responsive AI-content checker with a lightweight Node.js backend that serves the website and returns demo analysis result payloads.
+Verity is an image, text, and video authenticity checker with a Node.js backend connected to Hive AI's content-detection API.
 
 ## Run locally
 
-1. Install dependencies:
+1. Create a Hive AI project and API key.
+2. Set the key without putting it in the repository:
+
+```bash
+export HIVE_API_KEY="your_hive_api_key"
+```
+
+On Windows PowerShell:
+
+```powershell
+$env:HIVE_API_KEY="your_hive_api_key"
+```
+
+3. Install and start:
 
 ```bash
 npm install
-```
-
-2. Start the app:
-
-```bash
 npm start
 ```
 
-3. Open:
+4. Open `http://localhost:3000`.
 
-```text
-http://localhost:3000
-```
+## API
 
-## Backend API
-
-- `GET /api/health` → checks service status
-- `POST /api/analyze` → analyzes an uploaded file or URL payload
+- `GET /api/health` checks the server and whether the Hive key is configured.
+- `POST /api/analyze` accepts `type=image|text|video`, an uploaded `file`, and/or a public `url`.
 
 Example:
 
@@ -35,21 +39,10 @@ curl -X POST http://localhost:3000/api/analyze \
   -F "file=@example.png"
 ```
 
-Or:
+For a hosted deployment, add `HIVE_API_KEY` in the hosting provider's environment-variable settings. Do not place it in `app.js`, HTML, or a committed `.env` file.
 
-```bash
-curl -X POST http://localhost:3000/api/analyze \
-  -H "Content-Type: application/json" \
-  -d '{"type":"text","url":"https://example.com/article"}'
-```
+## Important
 
-## What the backend does
+The frontend is hosted on GitHub Pages, which cannot run this Node.js server. Deploy the backend to Render, Railway, Fly.io, or another Node-compatible host, then change the frontend API base URL from `/api/analyze` to the deployed backend URL. Enable CORS on the backend if frontend and backend use different domains.
 
-- Serves the static website
-- Accepts image, text, and video requests
-- Produces a structured demo detection result
-- Returns confidence score, label, recommendation, and signal list
-
-## Production upgrade
-
-Replace the demo logic in `server.js` with calls to your real model or detection service, and store results with privacy-safe retention settings.
+The API response is normalized into an explainable confidence score and signals. Detection is probabilistic, so results should support human review rather than act as absolute proof.
